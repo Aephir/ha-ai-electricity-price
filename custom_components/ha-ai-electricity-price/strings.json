@@ -1,60 +1,32 @@
 {
-    "config": {
-        "elo_api_token": {
-            "name": "API Token",
-            "description": "Enter your API token from eloverblik.dk"
-        },
-        "metering_point": {
-            "name": "Metering Point ID",
-            "description": "Enter the metering point ID for your electricity connection"
-        },
-        "price_sensor": {
-            "name": "Price Sensor",
-            "description": "Select the sensor that will be used to get the electricity price"
-        }
+  "title": "Electricity Price",
+  "step": {
+    "user": {
+      "title": "Enter the entity_id of an existing Home Assistant sensor",
+      "data": {
+        "price_sensor": "Entity ID"
+      }
     },
-    "options": {
-        "scan_interval": {
-            "name": "Scan Interval",
-            "description": "Select the frequency at which to update the electricity price data"
-        }
-    },
-    "entities": {
-        "electricity_price": {
-            "name": "Electricity Price",
-            "icon": "mdi:currency-usd",
-            "state": "{{ state_attr('sensor.electricity_price', 'price') }}",
-            "unit_of_measurement": "DKK/kWh",
-            "attributes": {
-                "price": {
-                    "name": "Price",
-                    "description": "The current price of electricity in DKK/kWh"
-                },
-                "today_min": {
-                    "name": "Today Min",
-                    "description": "The lowest price of electricity today in DKK/kWh"
-                },
-                "today_max": {
-                    "name": "Today Max",
-                    "description": "The highest price of electricity today in DKK/kWh"
-                },
-                "tomorrow_min": {
-                    "name": "Tomorrow Min",
-                    "description": "The predicted lowest price of electricity tomorrow in DKK/kWh"
-                },
-                "tomorrow_max": {
-                    "name": "Tomorrow Max",
-                    "description": "The predicted highest price of electricity tomorrow in DKK/kWh"
-                },
-                "tomorrow_avg": {
-                    "name": "Tomorrow Average",
-                    "description": "The predicted average price of electricity tomorrow in DKK/kWh"
-                },
-                "tomorrow_raw": {
-                    "name": "Tomorrow Raw",
-                    "description": "The raw value of the selected price sensor for tomorrow's price"
-                }
-            }
-        }
+    "details": {
+      "title": "Enter the details for the API",
+      "data": {
+        "eloverblik_token": "API Token",
+        "metering_point": "Metering Point",
+        "url": "URL"
+      }
     }
+  },
+  "error": {
+    "unknown": "Unexpected error",
+    "invalid_entity": "Invalid entity_id",
+    "invalid_token": "Invalid API token",
+    "invalid_metering_point": "Invalid metering point",
+    "invalid_url": "Invalid URL"
+  },
+  "create_entry": {
+    "default_title": "Electricity Price"
+  },
+  "abort": {
+    "already_configured": "Device is already configured"
+  }
 }

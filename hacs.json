@@ -1,6 +1,8 @@
-
 {
   "name": "Electricity Price",
-  "render_readme": true,
+  "domains": ["sensor"],
+  "documentation": "https://github.com/Aephir/ha-electricity-price",
+  "sources": ["https://github.com/Aephir/ha-electricity-price"],
+  "zip_release": true,
   "iot_class": "cloud_polling"
 }
