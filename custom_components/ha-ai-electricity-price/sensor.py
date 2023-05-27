@@ -1,12 +1,17 @@
 from typing import Any, Optional
 from homeassistant.helpers.entity import Entity
-from .const import DOMAIN, NAME, ENTITY_ID
+from homeassistant import config_entries, core
+from .const import (
+    DOMAIN,
+    NAME,
+    ENTITY_ID
+)
 
 class ElectricityPriceSensor(Entity):
-    def __init__(self, hass: HomeAssistant) -> None:
+    def __init__(self, hass: core.HomeAssistant) -> None:
         self._state: Optional[Any] = None
         self._name: str = NAME
-        self._hass: HomeAssistant = hass
+        self._hass: core.HomeAssistant = hass
 
     @property
     def unique_id(self) -> str:
