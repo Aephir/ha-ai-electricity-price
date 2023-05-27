@@ -29,17 +29,14 @@ class ElOverblikData:
         self._config_entry = config_entry
 
     async def async_setup(self):
-        # Placeholder dictionary
-        placeholder_dict: Dict[str, Any] = {}
-
-        # Placeholder lists
-        added_today: list[float] = [0.0]*24
-        added_tomorrow: list[float] = [0.0]*24
 
         # API CALL
-        all_fees = self.get_fees()
+        self._all_fees = await self.async_get_fees()
         # Add your API call code here, using self._config_entry.data[CONF_ELOVERBLIK_TOKEN],
         # self._config_entry.data[CONF_METERING_POINT], and self._config_entry.data[CONF_PRICE_SENSOR]
+
+        added_today: list[float] = self._all_fees["nettarif_c_time"]
+        added_tomorrow: list[float] = self._all_fees["nettarif_c_time"]  # Update once you can get tomorrow fees
 
         async def update_sensor(event: Event) -> None:
             new_state = event.data.get('new_state')
@@ -48,7 +45,7 @@ class ElOverblikData:
             tomorrow_raw = new_state.attributes.get('tomorrow_raw')
             # Update sensor.total_electricity_price here
             today = [x + y for x, y in zip(new_state.attributes.get('today'), added_today)]
-            tomorrow = [x + y for x, y in zip(new_state.attributes.get('tomorrow'), added_tomorrow)]
+            tomorrow = [x + y for x, y in zip(new_state.attributes.get('tomorrow'), added_tomorrow)]  # Maybe this won't work if 'tomrrow' is an empty list?
             total_today = [{"start": x['start'], "end": x['end'], "value": y} for x, y in zip(new_state.attributes.get('raw_today'), today)]
             total_tomorrow = [{"start": x['start'], "end": x['end'], "value": y} for x, y in zip(new_state.attributes.get('raw_tomorrow'), tomorrow)]
             attributes = {
@@ -62,19 +59,34 @@ class ElOverblikData:
                 "country": new_state.attributes.get('country'),
                 "region": new_state.attributes.get('region'),
             }
-            self._hass.states.async_set(ENTITY_ID, new_state.state + added_today[0], attributes)
+            now_hour = int(datetime.strftime(datetime.now(), "%H"))
+            self._hass.states.async_set(ENTITY_ID, new_state.state + added_today[now_hour], attributes)
 
         async_track_state_change_event(self._hass, [CONF_PRICE_SENSOR], update_sensor)
 
         async def async_update_data() -> None:
             # API CALL
+            self._all_fees = await self.async_get_fees()
             # Add your API call code here
 
         async_track_time_interval(self._hass, async_update_data, timedelta(days=1))
 
-        self._hass.states.async_set(ENTITY_ID, 0, placeholder_dict)
+        placeholder_attributes = {
+            "today": [],
+            "tomorrow": [],
+            "total_today": [],
+            "total_tomorrow": [],
+            "state_class": None,
+            "unit": None,
+            "currency": None,
+            "country": None,
+            "region": None,
+        }
 
-    def get_fees(self):
+        # This sets the (initial) state of the entity to `0` with attributes being the last argument.
+        self._hass.states.async_set(ENTITY_ID, 0, placeholder_attributes)
+
+    async def async_get_fees(self):
         """Get fees from the eloverblik API.
         Default to using the ones in the sensor attributes if unavailable.
         TODO: Get both today and tomorrow fees.
