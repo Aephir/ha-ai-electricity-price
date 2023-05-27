@@ -23,10 +23,22 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
+
 class ElOverblikData:
     def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry):
         self._hass = hass
         self._config_entry = config_entry
+        self._all_fees = {
+            "today": [],
+            "tomorrow": [],
+            "total_today": [],
+            "total_tomorrow": [],
+            "state_class": None,
+            "unit": None,
+            "currency": None,
+            "country": None,
+            "region": None,
+        }
 
     async def async_setup(self):
 
@@ -35,8 +47,8 @@ class ElOverblikData:
         # Add your API call code here, using self._config_entry.data[CONF_ELOVERBLIK_TOKEN],
         # self._config_entry.data[CONF_METERING_POINT], and self._config_entry.data[CONF_PRICE_SENSOR]
 
-        added_today: list[float] = self._all_fees["nettarif_c_time"]
-        added_tomorrow: list[float] = self._all_fees["nettarif_c_time"]  # Update once you can get tomorrow fees
+        added_today: list[float] = self._all_fees[ATTR_HOUR_NETTARIF]
+        added_tomorrow: list[float] = self._all_fees[ATTR_HOUR_NETTARIF]  # Update once you can get tomorrow fees
 
         async def update_sensor(event: Event) -> None:
             new_state = event.data.get('new_state')
@@ -71,20 +83,8 @@ class ElOverblikData:
 
         async_track_time_interval(self._hass, async_update_data, timedelta(days=1))
 
-        placeholder_attributes = {
-            "today": [],
-            "tomorrow": [],
-            "total_today": [],
-            "total_tomorrow": [],
-            "state_class": None,
-            "unit": None,
-            "currency": None,
-            "country": None,
-            "region": None,
-        }
-
         # This sets the (initial) state of the entity to `0` with attributes being the last argument.
-        self._hass.states.async_set(ENTITY_ID, 0, placeholder_attributes)
+        self._hass.states.async_set(ENTITY_ID, 0, self._all_fees)
 
     async def async_get_fees(self):
         """Get fees from the eloverblik API.
