@@ -7,6 +7,7 @@ from .const import (
     ENTITY_ID
 )
 
+
 class ElectricityPriceSensor(Entity):
     def __init__(self, hass: core.HomeAssistant) -> None:
         self._state: Optional[Any] = None

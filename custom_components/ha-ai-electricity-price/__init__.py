@@ -13,9 +13,9 @@ from .const import (
     CONF_PRICE_SENSOR,
     CONF_ELOVERBLIK_TOKEN,
     CONF_METERING_POINT,
-    ATTR_TRANS_NETTARIF,
-    ATTR_SYSTEMTARIF,
-    ATTR_HOUR_NETTARIF,
+    ATTR_TRANS_NETTARIFF,
+    ATTR_SYSTEMTARIFF,
+    ATTR_HOUR_NETTARIFF,
     ATTR_ELAFGIFT,
     ATTR_TODAY,
     ATTR_TOMORROW,
@@ -47,14 +47,13 @@ class ElOverblikData:
         # Add your API call code here, using self._config_entry.data[CONF_ELOVERBLIK_TOKEN],
         # self._config_entry.data[CONF_METERING_POINT], and self._config_entry.data[CONF_PRICE_SENSOR]
 
-        added_today: list[float] = self._all_fees[ATTR_HOUR_NETTARIF]
-        added_tomorrow: list[float] = self._all_fees[ATTR_HOUR_NETTARIF]  # Update once you can get tomorrow fees
+        added_today: list[float] = self._all_fees[ATTR_HOUR_NETTARIFF]
+        added_tomorrow: list[float] = self._all_fees[ATTR_HOUR_NETTARIFF]  # Update once you can get tomorrow fees
 
         async def update_sensor(event: Event) -> None:
             new_state = event.data.get('new_state')
             if new_state is None:
                 return
-            tomorrow_raw = new_state.attributes.get('tomorrow_raw')
             # Update sensor.total_electricity_price here
             today = [x + y for x, y in zip(new_state.attributes.get('today'), added_today)]
             tomorrow = [x + y for x, y in zip(new_state.attributes.get('tomorrow'), added_tomorrow)]  # Maybe this won't work if 'tomrrow' is an empty list?
@@ -101,22 +100,22 @@ class ElOverblikData:
             # {'transmissions_nettarif': 0.058, 'systemtarif': 0.054, 'elafgift': 0.008, 'nettarif_c_time': [0.1837, 0.1837, 0.1837, 0.1837, 0.1837, 0.1837, 0.5511, 0.5511, 0.5511, 0.5511, 0.5511, 0.5511, 0.5511, 0.5511, 0.5511, 0.5511, 0.5511, 1.6533, 1.6533, 1.6533, 1.6533, 0.5511, 0.5511, 0.5511]}
             charges = json.loads(data.charges)
             # Charges are in øre per Wh. Multiply by 1000 and divide by 100 (i.e., multiply by 10) to get DKK/kWh.
-            trans_net_tarif = float(charges[ATTR_TRANS_NETTARIF]) * 10
-            system_tarif = float(charges[ATTR_SYSTEMTARIF]) * 10
+            trans_net_tariff = float(charges[ATTR_TRANS_NETTARIFF]) * 10
+            system_tariff = float(charges[ATTR_SYSTEMTARIFF]) * 10
             elafgift = float(charges[ATTR_ELAFGIFT]) * 10
-            hour_net_tarif = [float(i) * 10 for i in charges[ATTR_HOUR_NETTARIF]]
+            hour_net_tariff = [float(i) * 10 for i in charges[ATTR_HOUR_NETTARIFF]]
         else:
-            trans_net_tarif = self.hass.states.get(ENTITY_ID).attribute.get(ATTR_TRANS_NETTARIF)
-            system_tarif = self.hass.states.get(ENTITY_ID).attribute.get(ATTR_SYSTEMTARIF)
-            elafgift = self.hass.states.get(ENTITY_ID).attribute.get(ATTR_ELAFGIFT)
-            hour_net_tarif = self.hass.states.get(ENTITY_ID).attribute.get(ATTR_HOUR_NETTARIF)
+            trans_net_tariff = self._hass.states.get(ENTITY_ID).attribute.get(ATTR_TRANS_NETTARIFF)
+            system_tariff = self._hass.states.get(ENTITY_ID).attribute.get(ATTR_SYSTEMTARIFF)
+            elafgift = self._hass.states.get(ENTITY_ID).attribute.get(ATTR_ELAFGIFT)
+            hour_net_tariff = self._hass.states.get(ENTITY_ID).attribute.get(ATTR_HOUR_NETTARIFF)
 
             # Is this how to get?? self.hass.states.get(ENTITY_ID).attribute.get("ATTR_TARIFS")
         all_fees_today = {
-            ATTR_TRANS_NETTARIF: trans_net_tarif,
-            ATTR_SYSTEMTARIF: system_tarif,
+            ATTR_TRANS_NETTARIFF: trans_net_tariff,
+            ATTR_SYSTEMTARIFF: system_tariff,
             ATTR_ELAFGIFT: elafgift,
-            ATTR_HOUR_NETTARIF: hour_net_tarif
+            ATTR_HOUR_NETTARIFF: hour_net_tariff
         }
 
         all_fees_tomorrow = all_fees_today  # Update once it's possible to get tomorrow tariffs from API call
@@ -128,26 +127,10 @@ class ElOverblikData:
 
         return all_fees
 
-    @staticmethod
-    def day_before_summer_or_winter() -> str:
-        """Determine if it is the day before tariffs change.
-        This happens on March 1st and October 1st.
-        Find a better way for this, it will not be the same for everyone, always."""
-
-        today_month = int(datetime.now().strftime("%m"))
-        tomorrow_month = int((datetime.now() + timedelta(days=1)).strftime("%m"))
-
-        transition_to = "none"
-
-        if today_month == 2 and tomorrow_month == 3:
-            transition_to = "summer"
-        elif today_month == 9 and tomorrow_month == 10:
-            transition_to = "winter"
-
-        return transition_to
 
 async def async_setup(hass: HomeAssistant, config: Dict[str, Any]) -> bool:
     return True
+
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     data = ElOverblikData(hass, config_entry)
