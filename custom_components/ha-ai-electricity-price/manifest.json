@@ -3,7 +3,7 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/Aephir/ha-ai-electricity-price",
-  "domain": "electricity_price",
+  "domain": "ha-ai-electricity-price",
   "iot_class": "cloud_polling",
   "name": "Electricity Price",
   "integration_type": "service",
