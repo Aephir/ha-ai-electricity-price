@@ -17,7 +17,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(self, user_input: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         errors: Dict[str, str] = {}
         if user_input is not None:
-            return self.async_create_entry(title="Electricity Price", data=user_input)
+            if not errors:
+                return await self.async_step_details()
 
         return self.async_show_form(
             step_id="user",
