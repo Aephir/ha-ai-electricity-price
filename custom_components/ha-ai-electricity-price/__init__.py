@@ -20,6 +20,7 @@ from .const import (
     ATTR_TODAY,
     ATTR_TOMORROW,
 )
+from .sensor import ElectricityPriceSensor
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -135,4 +136,7 @@ async def async_setup(hass: HomeAssistant, config: Dict[str, Any]) -> bool:
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     data = ElOverblikData(hass, config_entry)
     await data.async_setup()
+    hass.data[DOMAIN] = data
+    hass.async_create_task(hass.config_entries.async_forward_entry_setup(config_entry, "sensor"))
     return True
+

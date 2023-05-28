@@ -7,12 +7,12 @@ from .const import (
     ENTITY_ID
 )
 
-
 class ElectricityPriceSensor(Entity):
-    def __init__(self, hass: core.HomeAssistant) -> None:
+    def __init__(self, hass: core.HomeAssistant, data) -> None:
         self._state: Optional[Any] = None
         self._name: str = NAME
         self._hass: core.HomeAssistant = hass
+        self._data = data
 
     @property
     def unique_id(self) -> str:
@@ -32,3 +32,7 @@ class ElectricityPriceSensor(Entity):
 
     async def async_update(self) -> None:
         self._state = self._hass.states.get(ENTITY_ID).state
+
+
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    async_add_entities([ElectricityPriceSensor(hass, hass.data[DOMAIN])])
