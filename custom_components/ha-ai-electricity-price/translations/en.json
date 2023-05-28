@@ -1,0 +1,32 @@
+{
+  "title": "Electricity Price",
+  "step": {
+    "user": {
+      "title": "Enter the entity_id of an existing Home Assistant sensor",
+      "data": {
+        "price_sensor": "Entity ID"
+      }
+    },
+    "details": {
+      "title": "Enter the details for the API",
+      "data": {
+        "eloverblik_token": "API Token",
+        "metering_point": "Metering Point",
+        "url": "URL"
+      }
+    }
+  },
+  "error": {
+    "unknown": "Unexpected error",
+    "invalid_entity": "Invalid entity_id",
+    "invalid_token": "Invalid API token",
+    "invalid_metering_point": "Invalid metering point",
+    "invalid_url": "Invalid URL"
+  },
+  "create_entry": {
+    "default_title": "Electricity Price"
+  },
+  "abort": {
+    "already_configured": "Device is already configured"
+  }
+}
