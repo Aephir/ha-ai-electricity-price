@@ -7,6 +7,6 @@
   "iot_class": "cloud_polling",
   "name": "Electricity Price",
   "integration_type": "service",
-  "requirements": [],
+  "requirements": ["pyeloverblik==0.4.1"],
   "version": "0.0.1"
 }
