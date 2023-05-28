@@ -18,7 +18,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: Dict[str, str] = {}
         if user_input is not None:
             if not errors:
-                return await self.async_step_details()
+                return await self.async_step_details(user_input)
 
         return self.async_show_form(
             step_id="user",
