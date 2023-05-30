@@ -127,20 +127,6 @@ class ElOverblikData:
             ATTR_TOMORROW: all_fees_tomorrow
         }
 
-        # Crude testing fix to avoid returning None
-        if all_fees is None:
-            all_fees = {
-                'transmissions_nettarif': 0.058,
-                'systemtarif': 0.054,
-                'elafgift': 0.008,
-                'nettarif_c_time': [
-                    0.1509, 0.1509, 0.1509, 0.1509, 0.1509, 0.1509,
-                    0.2264, 0.2264, 0.2264, 0.2264, 0.2264, 0.2264,
-                    0.2264, 0.2264, 0.2264, 0.2264, 0.2264, 0.5887,
-                    0.5887, 0.5887, 0.5887, 0.2264, 0.2264, 0.2264
-                ]
-            }
-
         return all_fees
 
 

@@ -22,6 +22,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema(
                 {
                     vol.Required(CONF_PRICE_SENSOR, default="sensor.nordpool_kwh_dk2_dkk_3_095_0"): str,
+                    ## sensor.nordpool_kwh_dk2_dkk_3_10_0
                 }
             ),
             errors=errors,
