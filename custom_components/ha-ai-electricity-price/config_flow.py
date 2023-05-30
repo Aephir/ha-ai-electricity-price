@@ -30,15 +30,15 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_details(self, user_input: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         errors: Dict[str, str] = {}
         if user_input is not None:
-            return self.async_show_form(
-                step_id="details",
-                data_schema=vol.Schema(
-                    {
-                        vol.Required(CONF_ELOVERBLIK_TOKEN): str,
-                        vol.Required(CONF_METERING_POINT): str,
-                    }
-                ),
-                errors=errors,
-            )
+            return self.async_create_entry(title="Electricity Price", data=user_input)
 
-        return self.async_create_entry(title="Electricity Price", data=user_input)
+        return self.async_show_form(
+            step_id="details",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_ELOVERBLIK_TOKEN): str,
+                    vol.Required(CONF_METERING_POINT): str,
+                }
+            ),
+            errors=errors,
+        )

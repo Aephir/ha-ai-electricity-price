@@ -44,7 +44,7 @@ class ElOverblikData:
     async def async_setup(self):
 
         # API CALL
-        self._all_fees = await self.async_get_fees()
+        self._all_fees = await self.async_get_fees()  # WRite code to handle exceptions where API call fails!!
         # Add your API call code here, using self._config_entry.data[CONF_ELOVERBLIK_TOKEN],
         # self._config_entry.data[CONF_METERING_POINT], and self._config_entry.data[CONF_PRICE_SENSOR]
 
@@ -90,6 +90,7 @@ class ElOverblikData:
         """Get fees from the eloverblik API.
         Default to using the ones in the sensor attributes if unavailable.
         TODO: Get both today and tomorrow fees.
+        TODO: Handle exception where API call fails. Otherwise it might stall setup.
         """
 
         _token = self._config_entry[CONF_ELOVERBLIK_TOKEN]
@@ -125,6 +126,20 @@ class ElOverblikData:
             ATTR_TODAY: all_fees_today,
             ATTR_TOMORROW: all_fees_tomorrow
         }
+
+        # Crude testing fix to avoid returning None
+        if all_fees is None:
+            all_fees = {
+                'transmissions_nettarif': 0.058,
+                'systemtarif': 0.054,
+                'elafgift': 0.008,
+                'nettarif_c_time': [
+                    0.1509, 0.1509, 0.1509, 0.1509, 0.1509, 0.1509,
+                    0.2264, 0.2264, 0.2264, 0.2264, 0.2264, 0.2264,
+                    0.2264, 0.2264, 0.2264, 0.2264, 0.2264, 0.5887,
+                    0.5887, 0.5887, 0.5887, 0.2264, 0.2264, 0.2264
+                ]
+            }
 
         return all_fees
 

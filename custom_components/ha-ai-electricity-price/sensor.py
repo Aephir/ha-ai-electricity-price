@@ -13,6 +13,7 @@ class ElectricityPriceSensor(Entity):
         self._name: str = NAME
         self._hass: core.HomeAssistant = hass
         self._data = data
+        self._attrs = {}
 
     @property
     def unique_id(self) -> str:
@@ -30,7 +31,15 @@ class ElectricityPriceSensor(Entity):
     def should_poll(self) -> bool:
         return False
 
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        return self._attrs
+
     async def async_update(self) -> None:
+        """
+        TODO: Make check that entity exists, otherwise it will raise exception. Handle exception by raising error!
+        :return:
+        """
         self._state = self._hass.states.get(ENTITY_ID).state
 
 
