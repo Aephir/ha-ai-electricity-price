@@ -48,8 +48,8 @@ class ElOverblikData:
         # Add your API call code here, using self._config_entry.data[CONF_ELOVERBLIK_TOKEN],
         # self._config_entry.data[CONF_METERING_POINT], and self._config_entry.data[CONF_PRICE_SENSOR]
 
-        added_today: list[float] = self._all_fees[ATTR_HOUR_NETTARIFF]
-        added_tomorrow: list[float] = self._all_fees[ATTR_HOUR_NETTARIFF]  # Update once you can get tomorrow fees
+        added_today: list[float] = self._all_fees[ATTR_TODAY][ATTR_HOUR_NETTARIFF]
+        added_tomorrow: list[float] = self._all_fees[ATTR_TOMORROW][ATTR_HOUR_NETTARIFF]  # Update once you can get tomorrow fees
 
         async def update_sensor(event: Event) -> None:
             new_state = event.data.get('new_state')
@@ -130,8 +130,8 @@ class ElOverblikData:
         return all_fees
 
 
-async def async_setup(hass: HomeAssistant, config: Dict[str, Any]) -> bool:
-    return True
+# async def async_setup(hass: HomeAssistant, config: Dict[str, Any]) -> bool:
+#     return True
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
