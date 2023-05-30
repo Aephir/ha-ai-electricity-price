@@ -40,7 +40,13 @@ class ElectricityPriceSensor(Entity):
         TODO: Make check that entity exists, otherwise it will raise exception. Handle exception by raising error!
         :return:
         """
-        self._state = self._hass.states.get(ENTITY_ID).state
+        ## Test state to see whether this is the problem
+        # self._state = 1.23  # self._hass.states.get(ENTITY_ID).state
+        entity = self._hass.states.get(ENTITY_ID)
+        if entity is not None:
+            self._state = entity.state
+            self._attrs = entity.attributes
+            self.async_write_ha_state()
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
