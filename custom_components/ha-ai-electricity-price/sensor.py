@@ -1,51 +1,24 @@
-from typing import Any, Optional
 from homeassistant.helpers.entity import Entity
-from homeassistant import config_entries, core
-from .const import (
-    DOMAIN,
-    NAME,
-    ENTITY_ID
-)
+from .const import DOMAIN
 
-class ElectricityPriceSensor(Entity):
-    def __init__(self, hass: core.HomeAssistant, data) -> None:
-        self._state: Optional[Any] = None
-        self._name: str = NAME
-        self._hass: core.HomeAssistant = hass
-        self._data = data
-        self._attrs = {}
+class CustomSensor(Entity):
+    @property
+    def unique_id(self):
+        return f"{DOMAIN}_electricity_price_total"
 
     @property
-    def unique_id(self) -> str:
-        return ENTITY_ID
+    def state(self):
+        # Implement logic to get state
+        return self.hass.states.get(self.hass.data[DOMAIN]["entity_id"]).state + 1
 
     @property
-    def name(self) -> str:
-        return self._name
+    def device_state_attributes(self):
+        # Implement logic to get attributes
+        return self.hass.states.get(self.hass.data[DOMAIN]["entity_id"]).attributes
 
-    @property
-    def state(self) -> Optional[Any]:
-        return self._state
+    async def async_update(self):
+        # Update sensor state here
 
-    @property
-    def should_poll(self) -> bool:
-        return False
-
-    @property
-    def extra_state_attributes(self) -> dict[str, Any]:
-        return self._attrs
-
-    async def async_update(self) -> None:
-        """
-        TODO: Make check that entity exists, otherwise it will raise exception. Handle exception by raising error!
-        :return:
-        """
-        entity = self._hass.states.get(ENTITY_ID)
-        if entity is not None:
-            self._state = entity.state
-            self._attrs = entity.attributes
-            self.async_write_ha_state()
-
-
-async def async_setup_entry(hass, config_entry, async_add_entities):
-    async_add_entities([ElectricityPriceSensor(hass, hass.data[DOMAIN])])
+    def get_fees(self):
+        # Implement get_fees logic here
+        self.hass.data[DOMAIN]["fees"] = {"current_tax": 1, "current_electricity_fee": 50, "current_transport_fees": 20, "nettarif_c_time": []}
