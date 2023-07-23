@@ -8,10 +8,10 @@
             }
         },
         "second": {
-            "title": "Enter the URL and API token",
+            "title": "Enter the metering point and Eloverblik API token",
             "data": {
-                "url": "url",
-                "api_token": "API Token"
+                "metering_point": "metering_point",
+                "eloverblik_token": "Eloverblik API Token"
             }
         }
     },
