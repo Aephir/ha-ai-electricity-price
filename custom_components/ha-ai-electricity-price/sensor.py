@@ -1,5 +1,11 @@
+from pyeloverblik import Eloverblik
 from homeassistant.helpers.entity import Entity
-from .const import DOMAIN
+from .const import (
+    DOMAIN,
+    CONF_PRICE_SENSOR,
+    CONF_ELOVERBLIK_TOKEN,
+    CONF_METERING_POINT
+)
 
 class CustomSensor(Entity):
     @property

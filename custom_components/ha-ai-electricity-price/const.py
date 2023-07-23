@@ -1,4 +1,4 @@
-DOMAIN = "electricity_price"
+DOMAIN = "sensor"  # "electricity_price"
 NAME = "total_electricity_price"
 ENTITY_ID = "sensor.total_electricity_price"
 
