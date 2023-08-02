@@ -39,3 +39,17 @@ async def async_setup_entry(hass, entry):
     async_track_state_change_event(hass, [price_sensor], testing_integration.update_fees)
 
     return True
+
+
+# //{
+# //  "codeowners": ["@Aephir"],
+# //  "config_flow": true,
+# //  "dependencies": [],
+# //  "documentation": "https://github.com/Aephir/ha-ai-electricity-price",
+# //  "domain": "ha-ai-electricity-price",
+# //  "iot_class": "cloud_polling",
+# //  "name": "Electricity Price",
+# //  "integration_type": "service",
+# //  "requirements": ["pyeloverblik==0.4.1"],
+# //  "version": "0.0.1"
+# //}
