@@ -1,67 +1,41 @@
-import asyncio
 import logging
-
-from homeassistant import config_entries, core
-
-from .const import DOMAIN
+from .const import DOMAIN, ATTR_TOMORROW, SENSOR_PLATFORM, CONF_PRICE_SENSOR
+from homeassistant.core import callback
+from homeassistant.helpers.dispatcher import async_dispatcher_connect
+from homeassistant.helpers.event import async_track_state_change_event
 
 _LOGGER = logging.getLogger(__name__)
 
+class TestingIntegration:
+    def __init__(self, hass, price_sensor):
+        self._hass = hass
+        self._price_sensor = price_sensor
+        self.tariff_dict = {}
+        self.update_fees()
 
-async def async_setup_entry(
-        hass: core.HomeAssistant,
-        entry: config_entries.ConfigEntry
-) -> bool:
-    """Set up platform from a ConfigEntry."""
-    hass.data.setdefault(DOMAIN, {})
-    hass_data = dict(entry.data)
-    # Registers update listener to update config entry when options are updated.
-    unsub_options_update_listener = entry.add_update_listener(options_update_listener)
-    # Store a reference to the unsubscribe function to clean up if an entry is unloaded.
-    hass_data["unsub_options_update_listener"] = unsub_options_update_listener
-    hass.data[DOMAIN][entry.entry_id] = hass_data
-
-    # Forward the setup to the sensor platform.
-    hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(entry, "sensor")
-    )
-    return True
-
-
-async def options_update_listener(
-        hass: core.HomeAssistant, config_entry: config_entries.ConfigEntry
-):
-    """Handle options update."""
-    await hass.config_entries.async_reload(config_entry.entry_id)
-
-
-async def async_unload_entry(
-        hass: core.HomeAssistant, entry: config_entries.ConfigEntry
-) -> bool:
-    """Unload a config entry."""
-    unload_ok = all(
-        await asyncio.gather(
-            *[hass.config_entries.async_forward_entry_unload(entry, "sensor")]
-        )
-    )
-    # Remove options_update_listener.
-    hass.data[DOMAIN][entry.entry_id]["unsub_options_update_listener"]()
-
-    # Remove config entry from domain.
-    if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id)
-
-    return unload_ok
-
+    def update_fees(self):
+        self.tariff_dict = {
+            "transmissions_nettarif": 1,
+            "systemtarif": 2,
+            "elafgift": 3,
+            "nettarif_c_time": [4]*24
+        }
 
 async def async_setup(hass, config):
-    # Your setup code here
+    hass.data[DOMAIN] = {}
     return True
 
-# async def async_setup_entry(hass, config_entry):
-#     # Your setup code here
-#     hass.data[DOMAIN] = {"entity_id": config_entry.data["entity_id"],
-#                          "url": config_entry.data["url"],
-#                          "api_token": config_entry.data["api_token"],
-#                          "fees": {"current_tax": 1, "current_electricity_fee": 50, "current_transport_fees": 20, "nettarif_c_time": []}}
-#     return True
+async def async_setup_entry(hass, entry):
+    price_sensor = entry.data[CONF_PRICE_SENSOR]
+
+    testing_integration = TestingIntegration(hass, price_sensor)
+    hass.data[DOMAIN][entry.entry_id] = testing_integration
+
+    hass.async_create_task(
+        hass.config_entries.async_forward_entry_setup(entry, SENSOR_PLATFORM)
+    )
+
+    # Listen for changes in price_sensor state
+    async_track_state_change_event(hass, [price_sensor], testing_integration.update_fees)
+
+    return True

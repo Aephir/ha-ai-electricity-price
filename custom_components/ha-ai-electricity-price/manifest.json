@@ -1,13 +1,27 @@
+//{
+//  "codeowners": ["@Aephir"],
+//  "config_flow": true,
+//  "dependencies": [],
+//  "documentation": "https://github.com/Aephir/ha-ai-electricity-price",
+//  "domain": "ha-ai-electricity-price",
+//  "iot_class": "cloud_polling",
+//  "name": "Electricity Price",
+//  "integration_type": "service",
+//  "requirements": ["pyeloverblik==0.4.1"],
+//  "version": "0.0.1"
+//}
 {
-  "codeowners": ["@Aephir"],
-  "config_flow": true,
+  "domain": "test_integration",
+  "name": "Test Integration",
+  "version": "0.1.0",
+  "documentation": "https://www.example.com",
   "dependencies": [],
-  "documentation": "https://github.com/Aephir/ha-ai-electricity-price",
-  "domain": "ha-ai-electricity-price",
-  "iot_class": "cloud_polling",
-  "name": "Electricity Price",
-  "integration_type": "service",
-  "requirements": ["pyeloverblik==0.4.1"],
-  "version": "0.0.1"
+  "codeowners": [],
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": [],
+  "homekit": {},
+  "ios": {},
+  "config_flow": true
 }
 

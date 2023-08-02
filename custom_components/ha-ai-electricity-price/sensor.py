@@ -1,30 +1,42 @@
-from pyeloverblik import Eloverblik
 from homeassistant.helpers.entity import Entity
-from .const import (
-    DOMAIN,
-    CONF_PRICE_SENSOR,
-    CONF_ELOVERBLIK_TOKEN,
-    CONF_METERING_POINT
-)
+from homeassistant.core import callback
+from .const import DOMAIN, ATTR_TOMORROW, CONF_PRICE_SENSOR
 
-class CustomSensor(Entity):
+class TestingIntegrationSensor(Entity):
+    def __init__(self, hass, entry_id, price_sensor):
+        self._hass = hass
+        self._entry_id = entry_id
+        self._price_sensor = price_sensor
+        self._state = None
+        self._attributes = {}
+
     @property
-    def unique_id(self):
-        return f"{DOMAIN}_electricity_price_total"
+    def name(self):
+        return "Testing Integration Sensor"
 
     @property
     def state(self):
-        # Implement logic to get state
-        return self.hass.states.get(self.hass.data[DOMAIN]["entity_id"]).state + 1
+        return self._state
 
     @property
-    def device_state_attributes(self):
-        # Implement logic to get attributes
-        return self.hass.states.get(self.hass.data[DOMAIN]["entity_id"]).attributes
+    def should_poll(self):
+        return False
 
-    async def async_update(self):
-        # Update sensor state here
+    @callback
+    def _handle_update(self, event):
+        new_state = event.data.get('new_state')
+        if new_state is None:
+            return
 
-    def get_fees(self):
-        # Implement get_fees logic here
-        self.hass.data[DOMAIN]["fees"] = {"current_tax": 1, "current_electricity_fee": 50, "current_transport_fees": 20, "nettarif_c_time": []}
+        self._state = new_state.state
+        self._attributes = new_state.attributes
+
+        self.async_write_ha_state()
+
+    async def async_added_to_hass(self):
+        self.async_on_remove(
+            self._hass.bus.async_listen(
+                'state_changed',
+                self._handle_update
+            )
+        )
