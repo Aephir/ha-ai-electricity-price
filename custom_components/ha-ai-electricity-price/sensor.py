@@ -3,10 +3,8 @@ from homeassistant.core import callback
 from .const import DOMAIN, ATTR_TOMORROW, CONF_PRICE_SENSOR
 
 class TestingIntegrationSensor(Entity):
-    def __init__(self, hass, entry_id, price_sensor):
-        self._hass = hass
-        self._entry_id = entry_id
-        self._price_sensor = price_sensor
+    def __init__(self, testing_integration):
+        self._testing_integration = testing_integration
         self._state = None
         self._attributes = {}
 

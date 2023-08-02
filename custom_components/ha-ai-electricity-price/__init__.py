@@ -40,6 +40,14 @@ async def async_setup_entry(hass, entry):
 
     return True
 
+async def async_setup_platform(hass, config, add_entities, discovery_info=None):
+    """Set up the sensor platform."""
+    if discovery_info is None:
+        return
+
+    testing_integration = hass.data[DOMAIN][discovery_info["entry_id"]]
+    add_entities([TestingIntegrationSensor(testing_integration)])
+
 
 # //{
 # //  "codeowners": ["@Aephir"],
