@@ -18,10 +18,10 @@
   },
   "error": {
     "unknown": "Unexpected error",
-    "invalid_entity": "Invalid entity_id",
-    "invalid_token": "Invalid API token",
-    "invalid_metering_point": "Invalid metering point",
-    "invalid_url": "Invalid URL"
+    "invalid_entity_id": "Invalid entity_id",
+    "invalid_api_token": "Invalid API token",
+    "invalid_meting_point": "Invalid metering point",
+    "invalid_url":  "Invalid URL"
   },
   "create_entry": {
     "default_title": "Electricity Price"

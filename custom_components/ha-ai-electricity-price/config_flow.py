@@ -111,9 +111,15 @@ class FlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 info_api_token = await async_validate_api_token(self.hass, user_input)
+            except InvalidEntityID:
+                errors["base"] = "invalid_api_token"
+            except Exception:  # pylint: disable=broad-except
+                _LOGGER.exception("Unexpected exception")
+                errors["base"] = "unknown"
+            try:
                 info_metering_point = await async_validate_metering_point(self.hass, user_input)
             except InvalidEntityID:
-                errors["base"] = "invalid_entity_id"
+                errors["base"] = "invalid_meting_point"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")
                 errors["base"] = "unknown"
@@ -131,15 +137,39 @@ class FlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
 class InvalidEntityID(exceptions.InvalidEntityFormatError):
     """Error to indicate invalid entity_id."""
+    def __init__(self, message="Invalid entity_id detected"):
+        self.message = message
+        super().__init__(self.message)
+
+    def __str__(self):
+        return f"{self.__class__.__name__}: {self.message}"
 
 
 class NoInputName(exceptions.IntegrationError):
     """Error to indicate no input name."""
+    def __init__(self, message="No input detected"):
+        self.message = message
+        super().__init__(self.message)
+
+    def __str__(self):
+        return f"{self.__class__.__name__}: {self.message}"
 
 
-class InvalidAPIToken(exceptions.IntegrationError):
-    """Error to indicate invalid API token."""
+class InvalidAPIToken(exceptions.HomeAssistantError):
+    """Error to indicate an invalid API token."""
+    def __init__(self, message="Invalid API token provided"):
+        self.message = message
+        super().__init__(self.message)
+
+    def __str__(self):
+        return f"{self.__class__.__name__}: {self.message}"
 
 
 class InvalidMeteringPoint(exceptions.IntegrationError):
-    """Error to indicate invalid metering point."""
+    """Error to indicate an invalid metering point."""
+    def __init__(self, message="Invalid metering point provided"):
+        self.message = message
+        super().__init__(self.message)
+
+    def __str__(self):
+        return f"{self.__class__.__name__}: {self.message}"
