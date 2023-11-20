@@ -1,5 +1,10 @@
 import logging
-from .const import DOMAIN, ATTR_TOMORROW, SENSOR_PLATFORM, CONF_PRICE_SENSOR
+from .const import (
+    DOMAIN,
+    ATTR_TOMORROW,
+    SENSOR_PLATFORM,
+    CONF_PRICE_SENSOR
+)
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.event import async_track_state_change_event
@@ -28,15 +33,15 @@ async def async_setup(hass, config):
 async def async_setup_entry(hass, entry):
     price_sensor = entry.data[CONF_PRICE_SENSOR]
 
-    testing_integration = TestingIntegration(hass, price_sensor)
-    hass.data[DOMAIN][entry.entry_id] = testing_integration
+    electricity_price = TestingIntegration(hass, price_sensor)
+    hass.data[DOMAIN][entry.entry_id] = electricity_price
 
     hass.async_create_task(
         hass.config_entries.async_forward_entry_setup(entry, SENSOR_PLATFORM)
     )
 
     # Listen for changes in price_sensor state
-    async_track_state_change_event(hass, [price_sensor], testing_integration.update_fees)
+    async_track_state_change_event(hass, [price_sensor], electricity_price.update_fees)
 
     return True
 
@@ -45,8 +50,8 @@ async def async_setup_platform(hass, config, add_entities, discovery_info=None):
     if discovery_info is None:
         return
 
-    testing_integration = hass.data[DOMAIN][discovery_info["entry_id"]]
-    add_entities([TestingIntegrationSensor(testing_integration)])
+    electricity_price = hass.data[DOMAIN][discovery_info["entry_id"]]
+    add_entities([ElectricityPriceSensor(electricity_price)])
 
 
 # //{

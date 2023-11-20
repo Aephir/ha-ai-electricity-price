@@ -1,5 +1,5 @@
 {
-    "title": "Your Custom Integration Name",
+    "title": "Electricity Price",
     "step": {
         "user": {
             "title": "Enter the entity_id",
