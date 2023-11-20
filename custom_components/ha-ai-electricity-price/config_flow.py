@@ -14,18 +14,14 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-PRICE_SENSOR_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_PRICE_SENSOR): str,  # cv.entity_id,
-    }
-)
+PRICE_SENSOR_SCHEMA = vol.Schema({
+    vol.Required(CONF_PRICE_SENSOR): str,  # cv.entity_id,
+})
 
-API_SCHEMA = vol.Schema(
-    {
-        vol.Required(CONF_ELOVERBLIK_TOKEN): str,  # cv.entity_id,
-        vol.Required(CONF_METERING_POINT): str,  # cv.entity_id,
-    }
-)
+API_SCHEMA = vol.Schema({
+    vol.Required(CONF_ELOVERBLIK_TOKEN): str,  # cv.entity_id,
+    vol.Required(CONF_METERING_POINT): str,  # cv.entity_id,
+})
 
 
 async def async_validate_input_entity_id(hass: HomeAssistant, data: dict) -> dict[str, Any]:
@@ -103,14 +99,14 @@ class FlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             if not errors:
                 self.data[CONF_PRICE_SENSOR] = user_input[CONF_PRICE_SENSOR]
 
-                return await self.async_step_api_endpoint()
+                return await self.async_step_api()
 
         # If there is no user input or there were errors, show the form again, incl. errors found with the input.
         return self.async_show_form(
             step_id="user", data_schema=PRICE_SENSOR_SCHEMA, errors=errors
         )
 
-    async def async_step_api_endpoint(self, user_input=None):
+    async def async_step_api(self, user_input=None):
         errors: dict = {}
         if user_input is not None:
             try:
@@ -129,7 +125,7 @@ class FlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title="Price Sensor", data=self.data)
 
         return self.async_show_form(
-            step_id="api_endpoint", data_schema=API_SCHEMA, errors=errors
+            step_id="api", data_schema=API_SCHEMA, errors=errors
         )
 
 

@@ -7,7 +7,7 @@
         "price_sensor": "Entity ID"
       }
     },
-    "details": {
+    "api": {
       "title": "Enter the details for the API",
       "data": {
         "eloverblik_token": "API Token",
