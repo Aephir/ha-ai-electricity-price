@@ -153,7 +153,7 @@ class ElectricityPriceSensor(CoordinatorEntity, Entity):
                 'nettarif_c_time': hour_net_tarif
             }
 
-        _LOGGER.debug(f"Fees today are: {self.config["fees"][ATTR_TODAY]}")
+        _LOGGER.debug(f"Fees today are: {self.config['fees'][ATTR_TODAY]}")
 
     def update_attributes(self):
         """Update all attributes"""
