@@ -3,16 +3,19 @@
   "step": {
     "user": {
       "title": "Enter the entity_id of an existing Home Assistant sensor",
+      "description": "Enter the entity_id to use for raw electricity price",
       "data": {
-        "price_sensor": "Entity ID"
+        "price_sensor": "Entity ID",
+        "name": "Name for the sensor"
       }
     },
     "api": {
       "title": "Enter the details for the API",
+      "description": "Enter the API token for Eloverblik and the metering point",
       "data": {
         "eloverblik_token": "API Token",
         "metering_point": "Metering Point",
-        "url": "URL"
+        "name": "What is this?"
       }
     }
   },
