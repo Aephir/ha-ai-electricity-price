@@ -92,9 +92,9 @@ class FlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 info_entity = await async_validate_input_entity_id(self.hass, user_input)
             except InvalidEntityID:
                 errors["base"] = "invalid_entity_id"
-            except Exception:  # pylint: disable=broad-except
-                _LOGGER.exception("Unexpected exception")
-                errors["base"] = "unknown"
+            # except Exception:  # pylint: disable=broad-except
+            #     _LOGGER.exception("Unexpected exception")
+            #     errors["base"] = "unknown"
 
             if not errors:
                 self.data[CONF_PRICE_SENSOR] = user_input[CONF_PRICE_SENSOR]
@@ -113,16 +113,16 @@ class FlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 info_api_token = await async_validate_api_token(self.hass, user_input)
             except InvalidEntityID:
                 errors["base"] = "invalid_api_token"
-            except Exception:  # pylint: disable=broad-except
-                _LOGGER.exception("Unexpected exception")
-                errors["base"] = "unknown"
+            # except Exception:  # pylint: disable=broad-except
+            #     _LOGGER.exception("Unexpected exception")
+            #     errors["base"] = "unknown"
             try:
                 info_metering_point = await async_validate_metering_point(self.hass, user_input)
             except InvalidEntityID:
                 errors["base"] = "invalid_meting_point"
-            except Exception:  # pylint: disable=broad-except
-                _LOGGER.exception("Unexpected exception")
-                errors["base"] = "unknown"
+            # except Exception:  # pylint: disable=broad-except
+            #     _LOGGER.exception("Unexpected exception")
+            #     errors["base"] = "unknown"
 
             if not errors:
                 self.data[CONF_ELOVERBLIK_TOKEN] = user_input[CONF_ELOVERBLIK_TOKEN]
