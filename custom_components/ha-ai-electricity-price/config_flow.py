@@ -36,7 +36,7 @@ async def async_validate_input_entity_id(hass: HomeAssistant, data: dict) -> dic
         "sensor",
     ]
 
-    if data[CONF_NAME] is None:
+    if data[CONF_PRICE_SENSOR] is None:
         raise NoInputName
     else:
         entity = cv.entity_id(data[CONF_PRICE_SENSOR])
